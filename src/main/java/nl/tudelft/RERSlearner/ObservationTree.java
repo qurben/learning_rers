@@ -1,4 +1,4 @@
-package RERSlearner;
+package nl.tudelft.RERSlearner;
 
 import java.util.HashMap;
 import java.util.LinkedList;

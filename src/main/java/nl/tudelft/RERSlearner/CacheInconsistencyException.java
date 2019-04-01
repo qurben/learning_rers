@@ -1,4 +1,4 @@
-package RERSlearner;
+package nl.tudelft.RERSlearner;
 
 import net.automatalib.words.Word;
 

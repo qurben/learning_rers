@@ -1,4 +1,4 @@
-package RERSlearner;
+package nl.tudelft.RERSlearner;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,34 +8,34 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Random;
 
-import net.automatalib.automata.transout.MealyMachine;
-import net.automatalib.commons.dotutil.DOT;
-import net.automatalib.util.graphs.dot.GraphDOT;
+import de.learnlib.acex.analyzers.AcexAnalyzers;
+import de.learnlib.algorithms.kv.mealy.KearnsVaziraniMealy;
+import de.learnlib.algorithms.lstar.ce.ObservationTableCEXHandlers;
+import de.learnlib.algorithms.lstar.closing.ClosingStrategies;
+import de.learnlib.algorithms.lstar.mealy.ExtensibleLStarMealy;
+import de.learnlib.algorithms.ttt.mealy.TTTLearnerMealy;
+import de.learnlib.api.algorithm.LearningAlgorithm;
+import de.learnlib.api.oracle.EquivalenceOracle;
+import de.learnlib.api.oracle.MembershipOracle;
+import de.learnlib.api.query.DefaultQuery;
+import de.learnlib.filter.statistic.Counter;
+import de.learnlib.filter.statistic.sul.ResetCounterSUL;
+import de.learnlib.filter.statistic.sul.SymbolCounterSUL;
+import de.learnlib.oracle.equivalence.WMethodEQOracle;
+import de.learnlib.oracle.equivalence.WpMethodEQOracle;
+import de.learnlib.oracle.equivalence.mealy.RandomWalkEQOracle;
+import de.learnlib.oracle.membership.SULOracle;
+import de.learnlib.util.Experiment;
+import net.automatalib.automata.transducers.MealyMachine;
+import net.automatalib.serialization.dot.GraphDOT;
+import net.automatalib.visualization.dot.DOT;
 import net.automatalib.words.Alphabet;
 import net.automatalib.words.Word;
-import net.automatalib.words.impl.SimpleAlphabet;
 
 import com.google.common.collect.Lists;
 
-import de.learnlib.acex.analyzers.AcexAnalyzers;
-import de.learnlib.algorithms.kv.mealy.KearnsVaziraniMealy;
-import de.learnlib.algorithms.lstargeneric.ce.ObservationTableCEXHandlers;
-import de.learnlib.algorithms.lstargeneric.closing.ClosingStrategies;
-import de.learnlib.algorithms.lstargeneric.mealy.ExtensibleLStarMealy;
-import de.learnlib.algorithms.ttt.mealy.TTTLearnerMealy;
-import de.learnlib.api.EquivalenceOracle;
-import de.learnlib.api.LearningAlgorithm;
-import de.learnlib.api.MembershipOracle.MealyMembershipOracle;
 import de.learnlib.api.SUL;
-import de.learnlib.eqtests.basic.WMethodEQOracle;
-import de.learnlib.eqtests.basic.WpMethodEQOracle;
-import de.learnlib.eqtests.basic.mealy.RandomWalkEQOracle;
-import de.learnlib.experiments.Experiment.MealyExperiment;
-import de.learnlib.oracles.DefaultQuery;
-import de.learnlib.oracles.ResetCounterSUL;
-import de.learnlib.oracles.SULOracle;
-import de.learnlib.oracles.SymbolCounterSUL;
-import de.learnlib.statistics.Counter;
+import net.automatalib.words.impl.SimpleAlphabet;
 
 /**
  * General learning testing framework. All basic settings are at the top of this file and can be configured
@@ -67,11 +67,11 @@ public class BasicLearner {
 	/**
 	 * For random walk, the number of symbols that is tested in total (divided over multiple traces).
 	 */
-	public static int randomWalk_numberOfSymbols = 300;
+	public static int randomWalk_numberOfSymbols = 1000;
 	/**
 	 * MaxDepth-parameter for W-method and Wp-method. Typically not larger than 3. Decrease for quicker runs.
 	 */
-	public static int w_wp_methods_maxDepth = 2;
+	public static int w_wp_methods_maxDepth = 3;
 
 	//*****************************************//
 	// Predefined learning and testing methods //
@@ -90,7 +90,7 @@ public class BasicLearner {
 	public enum TestingMethod { RandomWalk, WMethod, WpMethod, UserQueries }
 
 	public static LearningAlgorithm<MealyMachine<?, String, ?, String>, String, Word<String>> loadLearner(
-			LearningMethod learningMethod, MealyMembershipOracle<String,String> sulOracle, Alphabet<String> alphabet) {
+			LearningMethod learningMethod, MembershipOracle.MealyMembershipOracle<String,String> sulOracle, Alphabet<String> alphabet) {
 		switch (learningMethod){
 			case LStar:
 				return new ExtensibleLStarMealy<String, String>(alphabet, sulOracle, Lists.<Word<String>>newArrayList(), ObservationTableCEXHandlers.CLASSIC_LSTAR, ClosingStrategies.CLOSE_SHORTEST);
@@ -106,16 +106,16 @@ public class BasicLearner {
 	}
 
 	public static EquivalenceOracle<MealyMachine<?, String, ?, String>, String, Word<String>> loadTester(
-			TestingMethod testMethod, SUL<String,String> sul, MealyMembershipOracle<String,String> sulOracle) {
+			TestingMethod testMethod, SUL<String,String> sul, MembershipOracle.MealyMembershipOracle<String,String> sulOracle) {
 		switch (testMethod){
 			// simplest method, but doesn't perform well in practice, especially for large models
 			case RandomWalk:
-				return new RandomWalkEQOracle<>(randomWalk_chanceOfResetting, randomWalk_numberOfSymbols, true, new Random(123456l), sul);
+				return new RandomWalkEQOracle<>(sul, randomWalk_chanceOfResetting, randomWalk_numberOfSymbols, true, new Random(123456l));
 			// Other methods are somewhat smarter than random testing: state coverage, trying to distinguish states, etc.
 			case WMethod:
-				return new WMethodEQOracle.MealyWMethodEQOracle<>(w_wp_methods_maxDepth, sulOracle);
+				return new WMethodEQOracle.MealyWMethodEQOracle<>(sulOracle, w_wp_methods_maxDepth);
 			case WpMethod:
-				return new WpMethodEQOracle.MealyWpMethodEQOracle<>(w_wp_methods_maxDepth, sulOracle);
+				return new WpMethodEQOracle.MealyWpMethodEQOracle<>(sulOracle, w_wp_methods_maxDepth);
 			case UserQueries:
 				return new UserEQOracle(sul);
 			default:
@@ -134,8 +134,8 @@ public class BasicLearner {
 			LearningAlgorithm<MealyMachine<?, String, ?, String>, String, Word<String>> learner,
 			EquivalenceOracle<MealyMachine<?, String, ?, String>, String, Word<String>> eqOracle,
 			Alphabet<String> alphabet) throws IOException {
-		MealyExperiment<String, String> experiment
-				= new MealyExperiment<String, String>(learner, eqOracle, alphabet);
+		Experiment.MealyExperiment<String, String> experiment
+				= new Experiment.MealyExperiment<>(learner, eqOracle, alphabet);
 		experiment.run();
 		System.out.println("Ran " + experiment.getRounds().getCount() + " rounds");
 		produceOutput(FINAL_MODEL_FILENAME, experiment.getFinalHypothesis(), alphabet, true);
@@ -155,7 +155,7 @@ public class BasicLearner {
 			TestingMethod testingMethod,
 			Collection<String> alphabet
 			) throws IOException {
-		Alphabet<String> learlibAlphabet = new SimpleAlphabet<String>(alphabet);
+		Alphabet<String> learlibAlphabet = new SimpleAlphabet<>(alphabet);
 		LearningSetup learningSetup = new LearningSetup(sul, learningMethod, testingMethod, learlibAlphabet);
 		runSimpleExperiment(learningSetup.learner, learningSetup.eqOracle, learlibAlphabet);
 	}
@@ -266,6 +266,7 @@ public class BasicLearner {
 		GraphDOT.write(model, alphabet, dotWriter);
 		try {
 			DOT.runDOT(new File(fileName + ".dot"), "pdf", new File(fileName + ".pdf"));
+			DOT.runDOT(new File(fileName + ".dot"), "png", new File(fileName + ".png"));
 		} catch (Exception e) {
 			if (verboseError) {
 				System.err.println("Warning: Install graphviz to convert dot-files to PDF");
@@ -295,7 +296,7 @@ public class BasicLearner {
 			// we should use the sul only through those wrappers
 			sul = resetCounterSul;
 			// Most testing/learning-algorithms want a membership-oracle instead of a SUL directly
-			MealyMembershipOracle<String,String> sulOracle = new SULOracle<>(sul);
+			MembershipOracle.MealyMembershipOracle<String,String> sulOracle = new SULOracle<>(sul);
 
 			// Choosing an equivalence oracle
 			eqOracle = loadTester(testingMethod, sul, sulOracle);

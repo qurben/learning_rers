@@ -1,4 +1,4 @@
-package RERSlearner;
+package nl.tudelft.RERSlearner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import de.learnlib.api.SUL;
-import de.learnlib.api.SULException;
+import de.learnlib.api.exception.SULException;
 
 /**
  * Socket interface to connect to an SUT/test adapter over TCP.

@@ -1,9 +1,9 @@
-package RERSlearner;
+package nl.tudelft.RERSlearner;
 
-import de.learnlib.api.EquivalenceOracle;
 import de.learnlib.api.SUL;
-import de.learnlib.oracles.DefaultQuery;
-import net.automatalib.automata.transout.MealyMachine;
+import de.learnlib.api.oracle.EquivalenceOracle;
+import de.learnlib.api.query.DefaultQuery;
+import net.automatalib.automata.transducers.MealyMachine;
 import net.automatalib.words.Word;
 
 import java.util.*;
@@ -35,7 +35,7 @@ public class UserEQOracle implements EquivalenceOracle<MealyMachine<?, String, ?
                     System.out.println("SUL output: " + sulOutput);
                     if (!hypOutput.equals(sulOutput)) {
                         System.out.println();
-                        return new DefaultQuery<String, Word<String>>(Word.fromList(Collections.emptyList()), input, sulOutput);
+                        return new DefaultQuery<>(Word.<String>epsilon(), input, sulOutput);
                     } else {
                         System.out.println("Query '" + userInput + "' not a counterexample");
                     }

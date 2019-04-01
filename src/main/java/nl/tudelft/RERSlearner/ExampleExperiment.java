@@ -1,4 +1,4 @@
-package RERSlearner;
+package nl.tudelft.RERSlearner;
 
 import com.google.common.collect.ImmutableSet;
 import de.learnlib.api.SUL;

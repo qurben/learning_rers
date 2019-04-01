@@ -1,4 +1,4 @@
-package RERSlearner;
+package nl.tudelft.RERSlearner;
 
 /**
  * Created by rick on 17/03/2017.
@@ -6,7 +6,8 @@ package RERSlearner;
 
 import com.google.common.collect.Lists;
 import de.learnlib.api.SUL;
-import de.learnlib.api.SULException;
+import de.learnlib.api.exception.SULException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -43,8 +44,10 @@ public class ProcessSUL implements SUL<String, String> {
 
     public void post() throws SULException {
         try {
-            this.processInput.close();
-            this.processOutput.close();
+            if (this.process.isAlive()) {
+                this.processInput.close();
+                this.processOutput.close();
+            }
             this.process.destroy();
             this.process = null;
             this.processInput = null;
@@ -58,6 +61,8 @@ public class ProcessSUL implements SUL<String, String> {
     public String step(@Nullable String s) throws SULException {
         if(s == null) {
             return null;
+        } else if (!this.process.isAlive()) {
+            return "end;";
         } else {
             try {
                 this.processInput.write(s);
