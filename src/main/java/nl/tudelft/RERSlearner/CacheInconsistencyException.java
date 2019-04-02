@@ -2,6 +2,8 @@ package nl.tudelft.RERSlearner;
 
 import net.automatalib.words.Word;
 
+import java.util.Objects;
+
 /**
  * Contains the full input for which non-determinism was observed, as well as the full new output
  * and the (possibly shorter) old output with which it disagrees
@@ -47,7 +49,7 @@ public class CacheInconsistencyException extends RuntimeException {
 	 */
 	public Word getShortestInconsistentInput() {
 	    int indexOfInconsistency = 0;
-	    while (oldOutput.getSymbol(indexOfInconsistency).equals(newOutput.getSymbol(indexOfInconsistency))) {
+	    while (Objects.equals(oldOutput.getSymbol(indexOfInconsistency), newOutput.getSymbol(indexOfInconsistency))) {
 	        indexOfInconsistency ++;
 	    }
 	    return this.input.subWord(0, indexOfInconsistency);

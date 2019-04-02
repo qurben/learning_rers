@@ -23,7 +23,7 @@ public class ProcessSUL implements SUL<String, String> {
     private BufferedReader processOutput;
 
     ProcessSUL(String path) {
-        ArrayList command = Lists.newArrayList(new String[]{path});
+        ArrayList<String> command = Lists.newArrayList(path);
         this.pb = new ProcessBuilder(command);
         this.pb.redirectErrorStream(true);
     }

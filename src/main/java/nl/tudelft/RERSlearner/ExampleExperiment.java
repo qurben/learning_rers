@@ -1,9 +1,9 @@
 package nl.tudelft.RERSlearner;
 
-import com.google.common.collect.ImmutableSet;
 import de.learnlib.api.SUL;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -23,19 +23,9 @@ public class ExampleExperiment {
         SUL<String,String> sul = new ExampleSUL();
 
         // the input alphabet
-        Collection<String> inputAlphabet = ImmutableSet.of("a", "b", "c");
+        Collection<String> inputAlphabet = Arrays.asList(args[0].split(""));
 
-        try {
-            // runControlledExperiment for detailed statistics, runSimpleExperiment for just the result
-            BasicLearner.runControlledExperiment(sul, BasicLearner.LearningMethod.TTT, BasicLearner.TestingMethod.RandomWalk, inputAlphabet);
-        } finally {
-            if (sul instanceof AutoCloseable) {
-                try {
-                    ((AutoCloseable) sul).close();
-                } catch (Exception exception) {
-                    // should not happen
-                }
-            }
-        }
+        // runControlledExperiment for detailed statistics, runSimpleExperiment for just the result
+        BasicLearner.runControlledExperiment(sul, BasicLearner.LearningMethod.TTT, BasicLearner.TestingMethod.RandomWalk, inputAlphabet);
     }
 }

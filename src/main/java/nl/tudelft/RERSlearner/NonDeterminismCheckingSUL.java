@@ -16,7 +16,7 @@ import de.learnlib.api.exception.SULException;
  */
 public class NonDeterminismCheckingSUL<I,O> implements SUL<I,O> {
 	private final SUL<I,O> sul;
-	private final ObservationTree<I,O> root = new ObservationTree<I,O>();
+	private final ObservationTree<I,O> root = new ObservationTree<>();
 	private final List<I> inputs = new ArrayList<>();
 	private final List<O> outputs = new ArrayList<>();
 	

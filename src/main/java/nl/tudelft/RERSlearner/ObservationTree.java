@@ -60,7 +60,7 @@ public class ObservationTree<I,O> {
 	 * @param input
 	 * @param output
 	 * @return the next node
-	 * @throws InconsistencyException 
+	 * @throws CacheInconsistencyException
 	 */
 	public ObservationTree<I,O> addObservation(I input, O output) throws CacheInconsistencyException {
 		O previousOutput = this.outputs.get(input);
@@ -68,7 +68,7 @@ public class ObservationTree<I,O> {
 		if (createNewBranch) {
 			// input hasn't been queried before, make a new branch for it and traverse
 			this.outputs.put(input, output);
-			ObservationTree<I,O> child = new ObservationTree<I,O>(this, input, output);
+			ObservationTree<I,O> child = new ObservationTree<>(this, input, output);
 			this.children.put(input, child);
 			return child;
 		} else if (!previousOutput.equals(output)) {

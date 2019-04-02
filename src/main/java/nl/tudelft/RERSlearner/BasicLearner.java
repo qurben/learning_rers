@@ -93,13 +93,13 @@ public class BasicLearner {
 			LearningMethod learningMethod, MembershipOracle.MealyMembershipOracle<String,String> sulOracle, Alphabet<String> alphabet) {
 		switch (learningMethod){
 			case LStar:
-				return new ExtensibleLStarMealy<String, String>(alphabet, sulOracle, Lists.<Word<String>>newArrayList(), ObservationTableCEXHandlers.CLASSIC_LSTAR, ClosingStrategies.CLOSE_SHORTEST);
+				return new ExtensibleLStarMealy<>(alphabet, sulOracle, Lists.newArrayList(), ObservationTableCEXHandlers.CLASSIC_LSTAR, ClosingStrategies.CLOSE_SHORTEST);
 			case RivestSchapire:
-				return new ExtensibleLStarMealy<String, String>(alphabet, sulOracle, Lists.<Word<String>>newArrayList(), ObservationTableCEXHandlers.RIVEST_SCHAPIRE, ClosingStrategies.CLOSE_SHORTEST);
+				return new ExtensibleLStarMealy<>(alphabet, sulOracle, Lists.newArrayList(), ObservationTableCEXHandlers.RIVEST_SCHAPIRE, ClosingStrategies.CLOSE_SHORTEST);
 			case TTT:
-				return new TTTLearnerMealy<String, String>(alphabet, sulOracle, AcexAnalyzers.LINEAR_FWD);
+				return new TTTLearnerMealy<>(alphabet, sulOracle, AcexAnalyzers.LINEAR_FWD);
 			case KearnsVazirani:
-				return new KearnsVaziraniMealy<String, String>(alphabet, sulOracle, false, AcexAnalyzers.LINEAR_FWD);
+				return new KearnsVaziraniMealy<>(alphabet, sulOracle, false, AcexAnalyzers.LINEAR_FWD);
 			default:
 				throw new RuntimeException("No learner selected");
 		}
@@ -247,7 +247,7 @@ public class BasicLearner {
 			TestingMethod testingMethod,
 			Collection<String> alphabet
 		) throws IOException {
-		Alphabet<String> learnlibAlphabet = new SimpleAlphabet<String>(alphabet);
+		Alphabet<String> learnlibAlphabet = new SimpleAlphabet<>(alphabet);
 		LearningSetup learningSetup = new LearningSetup(sul, learningMethod, testingMethod, learnlibAlphabet);
 		runControlledExperiment(learningSetup.learner, learningSetup.eqOracle, learningSetup.nrSymbols, learningSetup.nrResets, learnlibAlphabet);
 	}
@@ -287,7 +287,7 @@ public class BasicLearner {
 
 		public LearningSetup(SUL<String,String> sul, LearningMethod learningMethod, TestingMethod testingMethod, Alphabet<String> alphabet) {
 			// Wrap the SUL in a detector for non-determinism
-			SUL<String,String> nonDetSul = new NonDeterminismCheckingSUL<String,String>(sul);
+			SUL<String,String> nonDetSul = new NonDeterminismCheckingSUL<>(sul);
 			// Wrap the SUL in counters for symbols/resets, so that we can record some statistics
 			SymbolCounterSUL<String, String> symbolCounterSul = new SymbolCounterSUL<>("symbol counter", nonDetSul);
 			ResetCounterSUL<String, String> resetCounterSul = new ResetCounterSUL<>("reset counter", symbolCounterSul);

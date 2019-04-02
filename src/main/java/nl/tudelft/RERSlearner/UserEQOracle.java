@@ -6,11 +6,13 @@ import de.learnlib.api.query.DefaultQuery;
 import net.automatalib.automata.transducers.MealyMachine;
 import net.automatalib.words.Word;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
 /**
  * Created by ramon on 12-12-16.
  */
+@ParametersAreNonnullByDefault
 public class UserEQOracle implements EquivalenceOracle<MealyMachine<?, String, ?, String>, String, Word<String>> {
     private final SUL<String,String> sul;
 
@@ -33,9 +35,9 @@ public class UserEQOracle implements EquivalenceOracle<MealyMachine<?, String, ?
                     Word<String> hypOutput = hypothesis.computeOutput(input);
                     Word<String> sulOutput = sulOutput(input);
                     System.out.println("SUL output: " + sulOutput);
-                    if (!hypOutput.equals(sulOutput)) {
+                    if (!Objects.equals(hypOutput, sulOutput)) {
                         System.out.println();
-                        return new DefaultQuery<>(Word.<String>epsilon(), input, sulOutput);
+                        return new DefaultQuery<>(Word.epsilon(), input, sulOutput);
                     } else {
                         System.out.println("Query '" + userInput + "' not a counterexample");
                     }

@@ -1,6 +1,5 @@
 package nl.tudelft.RERSlearner;
 
-import com.google.common.collect.ImmutableSet;
 import de.learnlib.api.SUL;
 
 import java.io.IOException;
@@ -14,7 +13,7 @@ public class RERSExperiment {
     /**
      * Example of how to learn a Mealy machine model from one of the compliled RERS programs.
      *
-     * First argument is the alphabet, comma separated
+     * First argument is the alphabet, as a single string
      * Second argument is the file to process
      *
      * @param args
@@ -31,7 +30,7 @@ public class RERSExperiment {
 
 
         // the input alphabet
-        Collection<String> inputAlphabet = Arrays.asList(args[0].split(","));
+        Collection<String> inputAlphabet = Arrays.asList(args[0].split(""));
 
         // runControlledExperiment for detailed statistics, runSimpleExperiment for just the result
         //BasicLearner.runControlledExperiment(sul, BasicLearner.LearningMethod.TTT, BasicLearner.TestingMethod.RandomWalk, inputAlphabet);
