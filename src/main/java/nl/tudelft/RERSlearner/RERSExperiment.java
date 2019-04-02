@@ -30,7 +30,7 @@ public class RERSExperiment {
 
 
         // the input alphabet
-        Collection<String> inputAlphabet = Arrays.asList(args[0].split(""));
+        Collection<String> inputAlphabet = Arrays.asList(args[0].split(","));
 
         // runControlledExperiment for detailed statistics, runSimpleExperiment for just the result
         //BasicLearner.runControlledExperiment(sul, BasicLearner.LearningMethod.TTT, BasicLearner.TestingMethod.RandomWalk, inputAlphabet);
