@@ -67,7 +67,7 @@ public class BasicLearner {
 	/**
 	 * For random walk, the number of symbols that is tested in total (divided over multiple traces).
 	 */
-	public static int randomWalk_numberOfSymbols = 1000;
+	public static int randomWalk_numberOfSymbols = 300;
 	/**
 	 * MaxDepth-parameter for W-method and Wp-method. Typically not larger than 3. Decrease for quicker runs.
 	 */

@@ -34,6 +34,6 @@ public class RERSExperiment {
 
         // runControlledExperiment for detailed statistics, runSimpleExperiment for just the result
         //BasicLearner.runControlledExperiment(sul, BasicLearner.LearningMethod.TTT, BasicLearner.TestingMethod.RandomWalk, inputAlphabet);
-        BasicLearner.runControlledExperiment(sul, BasicLearner.LearningMethod.LStar, BasicLearner.TestingMethod.WMethod, inputAlphabet);
+        BasicLearner.runControlledExperiment(sul, BasicLearner.LearningMethod.TTT, BasicLearner.TestingMethod.WpMethod, inputAlphabet);
     }
 }

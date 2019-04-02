@@ -62,14 +62,14 @@ public class ProcessSUL implements SUL<String, String> {
         if(s == null) {
             return null;
         } else if (!this.process.isAlive()) {
-            return "end;";
+            return "";
         } else {
             try {
                 this.processInput.write(s);
                 this.processInput.write("\n");
                 this.processInput.flush();
 
-                while(!this.processOutput.ready()) {
+                while(!this.processOutput.ready() && this.process.isAlive()) {
                     Thread.sleep(1L);
                 }
 
